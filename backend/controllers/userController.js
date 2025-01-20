@@ -2,6 +2,8 @@ import UserModel from "../models/User.js";
 import bcrypt from "bcrypt";
 import sendEmailVerificationOTP from "../utils/sendEmailVerificationOtp.js";
 import EmailVerificationModel from "../models/emailVerification.js";
+import generateTokens from "../utils/generateTokens.js";
+import setTokensCookies from "../utils/setTokenCookies.js";
 
 // user registration
 const userRegistration = async (req, res) => {
@@ -112,4 +114,55 @@ const verifyEmail = async (req, res) => {
 }
 
 
-export {userRegistration,verifyEmail};
+const userLogin = async (req, res) => {
+   try {
+    const{email, password} = req.body;
+    // Check if emai and password are provided
+    if(!email || !password){
+      return res.status(400).json({status: "failed", message: "Email and password are required"})
+    }
+     
+    // Find user by email
+    const user = await UserModel.findOne({email});
+
+    // Check if user exist
+    if(!user){
+      return res.status(404).json({status: "failed", message: "Invalid email or password"})
+    }
+
+    // Check if user exixts
+    if(!user.is_verified){
+      return res.status(401).json({status: "failed", message: "Your account is not verified"})
+    }
+
+    // Compare password / Check Password
+    const isMatch = await bcrypt.compare(password,user.password);
+    if(!isMatch){
+      return res.status(401).json({status: "failed", message: "Invalid email or password"})
+    }
+ 
+    // Generate tokens
+    const {accessToken,refreshToken,accessTokenExp,refreshTokenExp} = await generateTokens(user)
+
+    // Set Cookies
+    setTokensCookies(res,accessToken,refreshToken,accessTokenExp,refreshTokenExp)    
+
+    // Send Success Response with Tokens
+    res.status(200).json({
+      user: {id: user._id, email: user.email, name: user.name, roles: user.role},
+      status: "success",
+      message: "Login successful",
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      access_token_exp: accessTokenExp,
+      is_auth: true
+    })
+
+   } catch (error) {
+    console.log(error)
+    res.status(500).json({status: "failed", message: "Unable to login, Please try again."})
+   }
+}
+
+
+export {userRegistration,verifyEmail, userLogin};
