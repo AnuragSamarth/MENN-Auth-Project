@@ -113,7 +113,7 @@ const verifyEmail = async (req, res) => {
    }
 }
 
-
+// user login
 const userLogin = async (req, res) => {
    try {
     const{email, password} = req.body;
@@ -164,5 +164,28 @@ const userLogin = async (req, res) => {
    }
 }
 
+ // Get New Access Token Or Refresh Token
+ const getNewAccessToken = async(req, res) => {
+ try {
+   // Get new access token using refresh token
+ const {newAccessToken,newRefreshToken,newAccessTokenExp,newRefreshTokenExp} = await refreshAccessToken(req,res);
 
-export {userRegistration,verifyEmail, userLogin};
+    // Set New token to cookie
+    setTokensCookies(res,newAccessToken,newRefreshToken,newAccessTokenExp,newRefreshTokenExp);
+
+    res.status(200).send({
+      status: "success",
+      message: "New token generated",
+      access_token: newAccessToken,
+      refresh_token: newRefreshToken,
+      access_token_exp: newAccessToken
+    })
+
+ } catch (error) {
+  console.log(error);
+  res.status(500).json({status: "failed", message: "Unable to generate new token, please try again later."})
+ }
+ }
+
+
+export {userRegistration,verifyEmail, userLogin, getNewAccessToken};
