@@ -1,4 +1,4 @@
-import mongoose, { now } from "mongoose";
+import mongoose from "mongoose";
 
 // Defining Schema
 const userRefreshTokenSchema = new mongoose.Schema({

@@ -4,6 +4,7 @@ import sendEmailVerificationOTP from "../utils/sendEmailVerificationOtp.js";
 import EmailVerificationModel from "../models/emailVerification.js";
 import generateTokens from "../utils/generateTokens.js";
 import setTokensCookies from "../utils/setTokenCookies.js";
+import refreshAccessToken from "../utils/refreshAccessToken.js";
 
 // user registration
 const userRegistration = async (req, res) => {
@@ -187,5 +188,9 @@ const userLogin = async (req, res) => {
  }
  }
 
+// Profile OR Logged in User
+const userProfile = async(req,res) => {
+   res.send({"user": req.user})
+}
 
-export {userRegistration,verifyEmail, userLogin, getNewAccessToken};
+export {userRegistration,verifyEmail, userLogin, getNewAccessToken, userProfile};
