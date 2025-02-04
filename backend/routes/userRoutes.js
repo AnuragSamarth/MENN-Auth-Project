@@ -7,7 +7,8 @@ import {
   userProfile,
   userLogout,
   chnageUserPassword,
-  sendUserPasswordResetEmail
+  sendUserPasswordResetEmail,
+  userPasswordReset
 } from "../controllers/userController.js";
 import passport from "passport";
 // import setAuthHeader from "../middlewares/setAuthHeader.js";
@@ -20,6 +21,7 @@ router.post("/verify-email", verifyEmail);
 router.post("/login", userLogin);
 router.post("/refresh-token", getNewAccessToken);
 router.post("/reset-password-link", sendUserPasswordResetEmail);
+router.post("/reset-password/:id/:token", userPasswordReset)
 
 
 // Protected Routes

@@ -358,6 +358,47 @@ const sendUserPasswordResetEmail = async (req,res) => {
    }
 }
 
+// Password Reset
+const userPasswordReset = async (req,res) =>{
+   try {
+    const {password,password_confirmation} = req.body;
+
+    // Check if password and password_confirmation are provided
+    if(!password || !password_confirmation){
+      return res.status(400).json({status: "failed", message: "New Password and Confirm New Password are required."})
+    }
+
+    // Check if password and password_confirmation match
+    if(password !== password_confirmation){
+      return res.status(400).json({status: "failed", message: "New Password and Confirm New Password don't match."})
+    }
+
+    const {id,token} = req.params;
+    // Find user by ID
+    const user = await UserModel.findById(id);
+    if(!user){
+      return res.status(404).json({status: "failed", message: "User not found"})
+    }
+    // Validate token
+    const new_secret = user._id + process.env.JWT_ACCESS_TOKEN_SECRET_KEY;
+    jwt.verify(token, new_secret);
+
+    // generate salt and hash new password
+    const salt = await bcrypt.genSalt(10);
+    const newHashPassword = await bcrypt.hash(password,salt);
+
+    // Update user's password
+    await UserModel.findByIdAndUpdate(user._id, {$set: {password: newHashPassword}});
+
+    // Send success response
+    res.status(200).json({status: "success", message: "Password reset successfully."})
+
+   } catch (error) {
+    console.error(error)
+    return res.status(500).json({status: "failed", message: "Unable to reset password. Please try again later."})
+   }
+}
+
 export {
   userRegistration,
   verifyEmail,
@@ -366,5 +407,6 @@ export {
   userProfile,
   userLogout,
   chnageUserPassword,
-  sendUserPasswordResetEmail
+  sendUserPasswordResetEmail,
+  userPasswordReset,
 };
