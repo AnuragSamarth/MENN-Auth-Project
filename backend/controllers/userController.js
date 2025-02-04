@@ -5,6 +5,8 @@ import EmailVerificationModel from "../models/emailVerification.js";
 import generateTokens from "../utils/generateTokens.js";
 import setTokensCookies from "../utils/setTokenCookies.js";
 import refreshAccessToken from "../utils/refreshAccessToken.js";
+import transpoter from "../config/emailConfig.js";
+import jwt from "jsonwebtoken"
 
 // user registration
 const userRegistration = async (req, res) => {
@@ -317,6 +319,45 @@ const chnageUserPassword = async (req,res) => {
    }
 }
 
+// Send Password Reset Link via Email
+const sendUserPasswordResetEmail = async (req,res) => {
+   try {
+    const {email} = req.body;
+      
+    // Check if email is provided
+    if(!email){
+      return res.status(400).json({status: "failed", message: "Email field is required."})
+    }
+     
+    // Find user by email
+    const user = await UserModel.findOne({email});
+    if(!user){
+      return res.status(404).json({status: "failed", message: "Email doesn't exixt"})
+    }
+    
+    // Generate token for password reset
+    const secret = user._id + process.env.JWT_ACCESS_TOKEN_SECRET_KEY;
+    const token = jwt.sign({userID: user._id}, secret, {expiresIn: "15m"})
+
+    // Reset Link
+    const resetLink = `${process.env.FRONTEND_HOST}/account/reset-password-confirm/${user._id}/${token}`;
+
+    // Send password reset email
+    await transpoter.sendMail({
+      from : process.env.EMAIL_FROM,
+      to: user.email,
+      subject: "Password Reset Link",
+      html: `<p>Hello ${user.name},</p><p>Please <a href="${resetLink}">Click here</a> to reset your password.</p>`
+    })
+
+    res.status(200).json({status: "success", message: "Password reset email sent. please check your email."})
+
+   } catch (error) {
+    console.error(error);
+    res.status(500).json({status: "failed", message: "Unable to send password reset email. Please try again later."})
+   }
+}
+
 export {
   userRegistration,
   verifyEmail,
@@ -324,5 +365,6 @@ export {
   getNewAccessToken,
   userProfile,
   userLogout,
-  chnageUserPassword
+  chnageUserPassword,
+  sendUserPasswordResetEmail
 };
