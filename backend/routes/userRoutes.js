@@ -5,7 +5,8 @@ import {
   userLogin,
   getNewAccessToken,
   userProfile,
-  userLogout
+  userLogout,
+  chnageUserPassword,
 } from "../controllers/userController.js";
 import passport from "passport";
 // import setAuthHeader from "../middlewares/setAuthHeader.js";
@@ -26,10 +27,16 @@ router.get(
   userProfile
 );
 router.post(
-    "/logout",
-    accessTokenAutoRefresh,
-    passport.authenticate("jwt", { session: false }),
-    userLogout
-  );
+  "/change-password",
+  accessTokenAutoRefresh,
+  passport.authenticate("jwt", { session: false }),
+  chnageUserPassword
+);
+router.post(
+  "/logout",
+  accessTokenAutoRefresh,
+  passport.authenticate("jwt", { session: false }),
+  userLogout
+);
 
 export default router;

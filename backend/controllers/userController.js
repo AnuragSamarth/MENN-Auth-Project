@@ -286,11 +286,43 @@ const userLogout = async (req, res) => {
   }
 };
 
+// Change Password
+const chnageUserPassword = async (req,res) => {
+   try {
+    const {password,password_confirmation} = req.body;
+
+    // Check if both password and password_confirmation are provided
+    if(!password || !password_confirmation){
+      return res.status(400).json({status: "failed", message: "Password and Confirm Password are required"})
+    }
+
+    // Check if password and password_confirmation match
+    if(password !== password_confirmation){
+      return res.status(400).json({status: "failed", message: "New password and confirm new password don't match."})
+    }
+
+    // Generate salt and hash new password
+    const salt = await bcrypt.genSalt(10);
+    const newHashPassword = await bcrypt.hash(password,salt)
+
+    // Update user password
+    await UserModel.findByIdAndUpdate(req.user._id, {$set : {password: newHashPassword}})
+
+    // send success response
+    res.status(200).json({status: "success", message: "Password change successfully"})
+
+   } catch (error) {
+    console.error(error);
+    res.status(500).json({status: "failed", message: "Unable to change password, please try again later."})
+   }
+}
+
 export {
   userRegistration,
   verifyEmail,
   userLogin,
   getNewAccessToken,
   userProfile,
-  userLogout
+  userLogout,
+  chnageUserPassword
 };
