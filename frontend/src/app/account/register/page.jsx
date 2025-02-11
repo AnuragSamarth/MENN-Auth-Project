@@ -24,12 +24,16 @@ export default function page() {
       // console.log(values)
       try {
         const response = await createUser(values);
-        if (response.data.status === "success") {
+        // console.log(response)
+        if ( response.data && response.data.status === "success") {
           toast.success(response.data.message);
-          action.resetForm();
           route.push("/account/verify-email");
-        } else if (response.data.message === "failed") {
-          toast.error(response.data.message);
+          action.resetForm();
+        } 
+        if ( response.error && response.error.data.status === "failed") {
+          console.log("failed")
+          toast.error(response.error.data.message);
+          action.resetForm();
         }
       } catch (error) {
         console.log(error);

@@ -7,10 +7,23 @@ export const authApi = createApi({
   endpoints: (builder) => ({
      createUser: builder.mutation({
         query: (user) => {
-            console.log("Create User Data",user);
+            // console.log("Create User Data",user);
             return {
                 url:'register',
                 method:'POST',
+                body: user,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        }
+     }),
+     verifyEmail: builder.mutation({
+        query: (user) => {
+            console.log(user)
+            return {
+                url: 'verify-email',
+                method: 'POST',
                 body: user,
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,4 +34,4 @@ export const authApi = createApi({
   }),
 })
 
-export const { useCreateUserMutation  } = authApi
+export const { useCreateUserMutation, useVerifyEmailMutation  } = authApi
