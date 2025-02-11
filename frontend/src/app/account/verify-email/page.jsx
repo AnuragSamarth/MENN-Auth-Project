@@ -17,11 +17,11 @@ export default function page() {
   const { errors, values, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: verifyEmailSchema,
-    onSubmit: async (values) => {
-      console.log(values)
+    onSubmit: async (values,action) => {
+      // console.log(values)
       try {
         const response = await verifyEmail(values);
-        console.log(response)
+        // console.log(response)
         if (response.data && response.data.status === "success") {
           toast.success(response.data.message);
           route.push("/account/login");

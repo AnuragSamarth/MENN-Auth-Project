@@ -20,7 +20,7 @@ export default function page() {
   const { values, errors, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: registerSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values,action) => {
       // console.log(values)
       try {
         const response = await createUser(values);

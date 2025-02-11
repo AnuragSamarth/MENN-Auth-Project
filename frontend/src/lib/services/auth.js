@@ -20,7 +20,7 @@ export const authApi = createApi({
      }),
      verifyEmail: builder.mutation({
         query: (user) => {
-            console.log(user)
+            // console.log(user)
             return {
                 url: 'verify-email',
                 method: 'POST',
@@ -30,8 +30,21 @@ export const authApi = createApi({
                 }
             }
         }
-     })
+     }),
+     loginUser: builder.mutation({
+        query: (user) => {
+            return {
+                url: 'login',
+                method: 'POST',
+                body: user,
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                credentials: 'include' // It is required to set cookies
+            }
+        }
+     }),
   }),
 })
 
-export const { useCreateUserMutation, useVerifyEmailMutation  } = authApi
+export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation } = authApi
