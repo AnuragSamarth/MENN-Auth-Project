@@ -15,6 +15,13 @@ const setTokensCookies = (res,accessToken,refreshToken,accessTokenExp,refreshTok
         secure: true, // Set to true if using HTTPS
         maxAge: refreshTokenAge
     })
+
+    // set cookies for is_Auth
+    res.cookie('is_auth', true, {
+        httpOnly: false,
+        secure: false,
+        maxAge: refreshTokenAge
+    })
 }
 
 export default setTokensCookies;
