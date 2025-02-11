@@ -44,7 +44,16 @@ export const authApi = createApi({
             }
         }
      }),
+     getUser: builder.query({
+        query: () => {
+            return {
+                url: 'me',
+                method: 'GET',
+                credentials: 'include'
+            }
+        }
+     })
   }),
 })
 
-export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation } = authApi
+export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation,useGetUserQuery } = authApi

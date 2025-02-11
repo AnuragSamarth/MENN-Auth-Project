@@ -1,14 +1,29 @@
 "use client"
 
+import { useGetUserQuery } from "../../../lib/services/auth";
 import { Lock, LogOut } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function page() {
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "user",
-  };
+  const {isSuccess,data} = useGetUserQuery();
+  const route = useRouter()
+  const [user,setUser] = useState({})
+  useEffect(()=>{
+   if(data && isSuccess){
+    setUser(data.user)
+   }
+  },[data, isSuccess])
+
+  // console.log(data.user)
+  // console.log(user)
+
+  // const user = {
+  //   name: "John Doe",
+  //   email: "john.doe@example.com",
+  //   role: "user",
+  // };
 
   const handleLogout = () => {
     console.log("Logout")
@@ -16,6 +31,7 @@ export default function page() {
 
   const handleChangePassword = () => {
     console.log("Change password")
+    route.push('/user/change-password')
   }
 
 
@@ -27,17 +43,17 @@ export default function page() {
         <div className="space-y-4">
           <div>
             <label htmlFor="name" className="sr-only">Name</label>
-            <input id="name" defaultValue={user.name} className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" readOnly/>
+            <input id="name" defaultValue={user?.name} className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" readOnly/>
           </div>
 
           <div>
             <label htmlFor="email" className="sr-only">Email</label>
-            <input id="email" type="email" defaultValue={user.email} readOnly className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" />
+            <input id="email" type="email" defaultValue={user?.email} readOnly className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" />
           </div>
 
           <div>
             <label htmlFor="role" className="sr-only">Role</label>
-            <input id="role" type="role" defaultValue={user.role} readOnly className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" />
+            <input id="role" type="role" defaultValue={user?.role} readOnly className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 outline-none" />
           </div>
         </div>
 
