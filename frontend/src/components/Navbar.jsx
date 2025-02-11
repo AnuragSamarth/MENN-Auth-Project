@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Menu, X } from "lucide-react"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuth, setIsAuth] = useState(null);
+  useEffect(() => {
+    const authCookie = Cookies.get("is_auth");
+    setIsAuth(authCookie);
+  }, []);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <nav className="bg-white shadow-md">
@@ -22,27 +28,35 @@ export default function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <Link
+                href="/"
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
                 Home
               </Link>
-              <Link
-                href="/user/profile"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Profile
-              </Link>
-              <Link
-                href="/account/login"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Login
-              </Link>
-              <Link
-                href="/account/register"
-                className="bg-blue-500 text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Register
-              </Link>
+              {isAuth ? (
+                <Link
+                  href="/user/profile"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Profile
+                </Link>
+              ) : (
+                <div>
+                  <Link
+                    href="/account/login"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/account/register"
+                    className="bg-blue-500 text-white hover:bg-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
           <div className="md:hidden">
@@ -71,31 +85,35 @@ export default function Navbar() {
             >
               Home
             </Link>
-            <Link
-              href="/user/profile"
-              className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
-              onClick={toggleMenu}
-            >
-              Profile
-            </Link>
-            <Link
-              href="/account/login"
-              className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
-              onClick={toggleMenu}
-            >
-              Login
-            </Link>
-            <Link
-              href="/account/register"
-              className="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-              onClick={toggleMenu}
-            >
-              Register
-            </Link>
+            {isAuth ? (
+              <Link
+                href="/user/profile"
+                className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+                onClick={toggleMenu}
+              >
+                Profile
+              </Link>
+            ) : (
+              <div>
+                <Link
+                  href="/account/login"
+                  className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={toggleMenu}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/account/register"
+                  className="bg-blue-500 text-white hover:bg-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={toggleMenu}
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
     </nav>
-  )
+  );
 }
-
