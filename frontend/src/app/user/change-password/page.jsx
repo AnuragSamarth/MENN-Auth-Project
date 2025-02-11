@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import { changePasswordSchema } from "../../../validation/schemas";
+import { useChangePasswordMutation } from "../../../lib/services/auth";
+import { toast } from "react-toastify";
 
 const initialValues = {
   password: "",
@@ -10,11 +12,27 @@ const initialValues = {
 };
 
 export default function page() {
+  const [changePassword] = useChangePasswordMutation();
   const { values, errors, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: changePasswordSchema,
     onSubmit: async (values) => {
-      console.log(values);
+      // console.log(values);
+      try {
+        const response = await changePassword(values);
+        if (response.data && response.data.status === "success") {
+          toast.success(response.data.message);
+          // route.push("/account/login");
+          action.resetForm();
+        }
+        if (response.error && response.error.data.status === "failed") {
+          console.log("failed");
+          toast.error(response.error.data.message);
+          action.resetForm();
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
   return (

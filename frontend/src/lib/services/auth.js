@@ -88,8 +88,21 @@ export const authApi = createApi({
                 }
             }
         }
+     }),
+     changePassword: builder.mutation({
+        query: (data) => {
+            return {
+                url: 'change-password',
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                credentials: 'include' // It is required to set cookies
+            }
+        }
      })
   }),
 })
 
-export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation,useGetUserQuery, useLogoutUserMutation,useResetPasswordLinkMutation, useResetPasswordMutation } = authApi
+export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation,useGetUserQuery, useLogoutUserMutation,useResetPasswordLinkMutation, useResetPasswordMutation, useChangePasswordMutation } = authApi
