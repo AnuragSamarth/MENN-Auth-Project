@@ -1,30 +1,50 @@
-'use client'
-import { useFormik } from "formik"
-import {resetPasswordSchema} from "../../../validation/schemas"
+"use client";
+import { useFormik } from "formik";
+import { resetPasswordSchema } from "../../../validation/schemas";
+import { useResetPasswordLinkMutation } from "../../../lib/services/auth";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const initialValues = {
-   email: ""
-}
+  email: "",
+};
 
-export default function page(){
-
-    const {values,errors,handleChange,handleSubmit} = useFormik({
-      initialValues,
-      validationSchema: resetPasswordSchema,
-      onSubmit: async (values) =>{
-        console.log(values)
+export default function page() {
+  const [resetPasswordLink] = useResetPasswordLinkMutation();
+  const route = useRouter();
+  const { values, errors, handleChange, handleSubmit } = useFormik({
+    initialValues,
+    validationSchema: resetPasswordSchema,
+    onSubmit: async (values, action) => {
+      // console.log(values)
+      try {
+        const response = await resetPasswordLink(values);
+        if (response.data && response.data.status === "success") {
+          toast.success(response.data.message);
+          action.resetForm();
+        }
+        if (response.error && response.error.data.status === "failed") {
+          // console.log("failed");
+          toast.error(response.error.data.message);
+          action.resetForm();
+        }
+      } catch (error) {
+        console.log(error);
       }
-    })
+    },
+  });
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-300">
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-300">
       <div className="max-w-md w-full space-y-8 p-8 bg-white shadow rounded-lg">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Reset Your Password</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Reset Your Password
+          </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
-          <div>
+            <div>
               <label htmlFor="email" className="sr-only">
                 Email address
               </label>
@@ -37,7 +57,9 @@ export default function page(){
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
               />
-              {errors.email && <p className="text-sm text-red-500 px-2">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500 px-2">{errors.email}</p>
+              )}
             </div>
           </div>
           <div>
@@ -51,5 +73,5 @@ export default function page(){
         </form>
       </div>
     </div>
-    )
+  );
 }

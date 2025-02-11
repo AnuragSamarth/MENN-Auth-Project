@@ -62,8 +62,20 @@ export const authApi = createApi({
                 credentials: "include"
             }
         }
+     }),
+     resetPasswordLink: builder.mutation({
+        query: (user) => {
+            return {
+                url: 'reset-password-link',
+                method: 'POST',
+                body: user,
+                headers: {
+                    'Content-type':'application/json'
+                }
+            }
+        }
      })
   }),
 })
 
-export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation,useGetUserQuery, useLogoutUserMutation } = authApi
+export const { useCreateUserMutation, useVerifyEmailMutation, useLoginUserMutation,useGetUserQuery, useLogoutUserMutation,useResetPasswordLinkMutation } = authApi

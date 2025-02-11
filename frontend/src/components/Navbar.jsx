@@ -11,7 +11,7 @@ export default function Navbar() {
   useEffect(() => {
     const authCookie = Cookies.get("is_auth");
     setIsAuth(authCookie);
-  }, []);
+  }, [isAuth]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
