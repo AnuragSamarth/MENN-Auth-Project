@@ -6,6 +6,7 @@ import { loginSchema } from "../../../validation/schemas";
 import { useRouter } from "next/navigation";
 import { useLoginUserMutation } from "../../../lib/services/auth";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 const initialValues = {
   email: "",
@@ -37,6 +38,10 @@ export default function page() {
       }
     },
   });
+
+  function handleGoogleLogin(){
+    window.open(`http://localhost:8000/auth/google`, '_self')
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-300">
@@ -108,6 +113,18 @@ export default function page() {
                 Forgot your password?
               </Link>
             </div>
+          </div>
+
+          <div>
+            <button className="group relative w-full flex justify-center py-2 px-4 border  text-sm font-medium rounded-md border-2 border-gray-500 focus:outline-none text-black gap-2" onClick={handleGoogleLogin}>
+              <Image
+                alt="google"
+                src="/google-color-svgrepo.svg"
+                width={20}
+                height={20}
+              />
+              <span>Login with Google</span>
+            </button>
           </div>
 
           <div>

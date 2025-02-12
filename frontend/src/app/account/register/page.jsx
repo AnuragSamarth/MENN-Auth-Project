@@ -6,6 +6,7 @@ import { registerSchema } from "../../../validation/schemas";
 import { useCreateUserMutation } from "../../../lib/services/auth";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const initialValues = {
   name: "",
@@ -20,18 +21,18 @@ export default function page() {
   const { values, errors, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: registerSchema,
-    onSubmit: async (values,action) => {
+    onSubmit: async (values, action) => {
       // console.log(values)
       try {
         const response = await createUser(values);
         // console.log(response)
-        if ( response.data && response.data.status === "success") {
+        if (response.data && response.data.status === "success") {
           toast.success(response.data.message);
           route.push("/account/verify-email");
           action.resetForm();
-        } 
-        if ( response.error && response.error.data.status === "failed") {
-          console.log("failed")
+        }
+        if (response.error && response.error.data.status === "failed") {
+          console.log("failed");
           toast.error(response.error.data.message);
           action.resetForm();
         }
@@ -40,6 +41,13 @@ export default function page() {
       }
     },
   });
+
+  function handleGoogleLogin(){
+    // console.log("handle google login")
+    window.open(`http://localhost:8000/auth/google`, '_self')
+  }
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-300">
       <div className="max-w-md w-full p-8 bg-white shadow rounded-lg">
@@ -128,6 +136,18 @@ export default function page() {
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
             >
               Register
+            </button>
+          </div>
+
+          <div>
+            <button className="group relative w-full flex justify-center py-2 px-4 border  text-sm font-medium rounded-md  border-2 border-gray-500 focus:outline-none text-black gap-2" onClick={handleGoogleLogin}>
+              <Image
+                alt="google"
+                src="/google-color-svgrepo.svg"
+                width={20}
+                height={20}
+              />
+              <span>Register with Google</span>
             </button>
           </div>
         </form>
