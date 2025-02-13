@@ -1,4 +1,4 @@
-import UserModel from "../models/User.js";
+import UserModel from "../models/user.js";
 import bcrypt from "bcrypt";
 import sendEmailVerificationOTP from "../utils/sendEmailVerificationOtp.js";
 import EmailVerificationModel from "../models/emailVerification.js";

@@ -1,4 +1,4 @@
-import UserModel from "../models/User.js";
+import UserModel from "../models/user.js";
 import UserRefreshTokenModel from "../models/userRefreshToken.js";
 import generateTokens from "./generateTokens.js";
 import verifyRefreshToken from "./verifyRefreshToken.js";
