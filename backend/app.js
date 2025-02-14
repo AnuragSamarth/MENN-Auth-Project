@@ -18,6 +18,14 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const corsOptions = {
     // set origin to a specific origin
     origin: process.env.FRONTEND_HOST,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization',
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
 }
