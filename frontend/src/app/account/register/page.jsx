@@ -44,7 +44,7 @@ export default function page() {
 
   function handleGoogleLogin(){
     // console.log("handle google login")
-    window.open(`http://localhost:8000/auth/google`, '_self')
+    window.open(`https://authapplication.onrender.com/auth/google`, '_self')
   }
 
 
